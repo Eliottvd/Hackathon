@@ -31,20 +31,11 @@ public class DataSender implements MqttCallback{
     }
     
     public void main1(String[] args) {
-        // TODO code application logic here
         this.Connexion();
         int min = 1;
         int max = 10;
         Random r = new Random();
         
-        /*
-        try {
-                int subQoS = 0;
-                myClient.subscribe("yolo/Temperature", subQoS);
-                System.out.println("SUBSCRIBED");
-        } catch (Exception e) {
-                e.printStackTrace();
-        }*/
         
         for(int i = 0; i < 10; i++)
         {
@@ -88,7 +79,6 @@ public class DataSender implements MqttCallback{
     
     public void publish(int number, String myTopic)
     {
-        //String myTopic = "yolo/Capteur1";
         MqttTopic topic = myClient.getTopic(myTopic);
         
         String pubMsg = Integer.toString(number);

@@ -4,8 +4,13 @@
  * and open the template in the editor.
  */
 package clientmqtt;
+import Sensors.Sensor;
 import static clientmqtt.DataSender.BROKER_URL;
 import com.sun.jdi.connect.spi.Connection;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.Socket;
 import java.security.Timestamp;
 import java.security.cert.CertPath;
 import java.sql.DriverManager;
@@ -18,9 +23,11 @@ import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Properties;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JDialog;
 import org.eclipse.paho.client.mqttv3.*;
 
 /**
@@ -34,10 +41,22 @@ public class DataReceiver implements MqttCallback {
     MqttConnectOptions connOpt;
     String topSub;
     private java.sql.Connection con;
+    String myDate;
+    Socket cliSock;
+    int zone;
+    String type;
+    NetworkUtilities.NetworkUtil nw;
     
     private int _formatHeure;
     private int _formatDate;
     private Locale _pays;
+    
+    private Properties hashtable;
+    
+    private int portServ;
+    
+    public Properties getHashtable(){return hashtable;}
+    private void setHashtable(Properties h){hashtable=h;}
     
     public static void main(String[] args) {
         DataReceiver m = new DataReceiver();
@@ -65,6 +84,27 @@ public class DataReceiver implements MqttCallback {
         } catch (Exception e) {
                 e.printStackTrace();
         }
+        
+        
+        // Connexion to server
+        
+        try {
+            FileInputStream in = new FileInputStream("data.properties");
+            Properties data = new Properties();
+            data.load(in);
+            portServ = Integer.parseInt((String) data.get("portServ"));
+        } catch (FileNotFoundException ex) {
+            System.out.println("File not found " + ex.getMessage());
+        }
+        catch(IOException e)
+        {
+            System.out.println("IO EXCEPTION " + e.getMessage());
+        }
+        
+        // Socket Creation
+        
+        nw = new NetworkUtilities.NetworkUtil();
+        
     }
     
     public int Connexion()
@@ -127,18 +167,20 @@ public class DataReceiver implements MqttCallback {
                 _formatDate = DateFormat.SHORT;
                 _formatHeure = DateFormat.MEDIUM;
                 _pays = Locale.FRANCE;
+                zone = 1;
+                type = "Temperature";
                 
                 Date maintenant = new Date();
-                String myDate = DateFormat.getDateTimeInstance(_formatDate, _formatHeure, _pays).format(maintenant);
+                myDate = DateFormat.getDateTimeInstance(_formatDate, _formatHeure, _pays).format(maintenant);
                  
                 InsertionBdCapteur inserer = new InsertionBdCapteur(Double.parseDouble(mm.toString()), myDate, con);
                 inserer.addTemperature(1);
+                
              }
              catch (SQLException e)
              {
                  System.out.println(e.getMessage());
              }
-            //System.out.println("ENDTHIS");
         }
         
         if(string.equals( "Zone1/Humidite"))
@@ -148,6 +190,8 @@ public class DataReceiver implements MqttCallback {
                 _formatDate = DateFormat.SHORT;
                 _formatHeure = DateFormat.MEDIUM;
                 _pays = Locale.FRANCE;
+                zone = 1;
+                type = "Humidity";
                 
                 Date maintenant = new Date();
                 String myDate = DateFormat.getDateTimeInstance(_formatDate, _formatHeure, _pays).format(maintenant);
@@ -159,7 +203,6 @@ public class DataReceiver implements MqttCallback {
              {
                  System.out.println(e.getMessage());
              }
-            //System.out.println("ENDTHIS");
         }
         
         if(string.equals( "Zone2/Temperature"))
@@ -169,20 +212,19 @@ public class DataReceiver implements MqttCallback {
                 _formatDate = DateFormat.SHORT;
                 _formatHeure = DateFormat.MEDIUM;
                 _pays = Locale.FRANCE;
+                zone = 2;
+                type = "Temperature";
                 
                 Date maintenant = new Date();
                 String myDate = DateFormat.getDateTimeInstance(_formatDate, _formatHeure, _pays).format(maintenant);
                  
                 InsertionBdCapteur inserer = new InsertionBdCapteur(Double.parseDouble(mm.toString()), myDate, con);
-                //System.out.println("COUCOU2");
                 inserer.addTemperature(2);
-                //System.out.println("ENDTHIS");
              }
              catch (SQLException e)
              {
                  System.out.println(e.getMessage());
              }
-            //System.out.println("ENDTHIS");
         }
         
         if(string.equals( "Zone2/Humidite"))
@@ -192,20 +234,19 @@ public class DataReceiver implements MqttCallback {
                 _formatDate = DateFormat.SHORT;
                 _formatHeure = DateFormat.MEDIUM;
                 _pays = Locale.FRANCE;
+                zone = 2;
+                type = "Humidity";
                 
                 Date maintenant = new Date();
                 String myDate = DateFormat.getDateTimeInstance(_formatDate, _formatHeure, _pays).format(maintenant);
                  
                 InsertionBdCapteur inserer = new InsertionBdCapteur(Double.parseDouble(mm.toString()), myDate, con);
-                //System.out.println("COUCOU2");
                 inserer.addHumidity(2);
-                //System.out.println("ENDTHIS");
              }
              catch (SQLException e)
              {
                  System.out.println(e.getMessage());
              }
-            //System.out.println("ENDTHIS");
         }
         
         if(string.equals( "Zone1/Pression"))
@@ -215,6 +256,8 @@ public class DataReceiver implements MqttCallback {
                 _formatDate = DateFormat.SHORT;
                 _formatHeure = DateFormat.MEDIUM;
                 _pays = Locale.FRANCE;
+                zone = 1;
+                type = "Pressure";
                 
                 Date maintenant = new Date();
                 String myDate = DateFormat.getDateTimeInstance(_formatDate, _formatHeure, _pays).format(maintenant);
@@ -226,7 +269,6 @@ public class DataReceiver implements MqttCallback {
              {
                  System.out.println(e.getMessage());
              }
-            //System.out.println("ENDTHIS");
         }
         
         if(string.equals( "Zone2/Pression"))
@@ -236,6 +278,8 @@ public class DataReceiver implements MqttCallback {
                 _formatDate = DateFormat.SHORT;
                 _formatHeure = DateFormat.MEDIUM;
                 _pays = Locale.FRANCE;
+                zone = 2;
+                type = "Pressure";
                 
                 Date maintenant = new Date();
                 String myDate = DateFormat.getDateTimeInstance(_formatDate, _formatHeure, _pays).format(maintenant);
@@ -247,8 +291,16 @@ public class DataReceiver implements MqttCallback {
              {
                  System.out.println(e.getMessage());
              }
-            //System.out.println("ENDTHIS");
         }
+        
+        // ADD CLIENT CODE HERE
+        
+        Sensor s = new Sensor(myDate, Integer.parseInt(mm.toString()), zone, type);
+        
+        cliSock = nw.Init(portServ);
+        nw.sendSensor(cliSock, s);
+        
+        
     }
 
     public ResultSet eQuery(String Query)
