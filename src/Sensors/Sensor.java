@@ -44,7 +44,7 @@ public class Sensor implements Serializable {
                  {
                     case "Humidity"    :    try { 
                                                 Humidity h = new Humidity(date, value, zone);
-                                                FileWriter fw = new FileWriter("Humidity.csv", true);
+                                                FileWriter fw = new FileWriter("D:\\Humidity.csv", true);
                                                 fw.append(String.valueOf(h.getValue()) +";"+ h.getDate() +";"+  String.valueOf(h.getZone())+"\n"); 
                                                 fw.close(); 
                                             }
@@ -54,7 +54,7 @@ public class Sensor implements Serializable {
                                             break;
                     case "Temperature"  :   try { 
                                                 Temperature h = new Temperature(date, value, zone);
-                                                FileWriter fw = new FileWriter("Temperature.csv", true);
+                                                FileWriter fw = new FileWriter("D:\\Temperature.csv", true);
                                                 fw.append(String.valueOf(h.getValue()) +";"+  h.getDate() +";"+  String.valueOf(h.getZone())+"\n" ); 
                                                 fw.close(); 
                                             }
@@ -64,7 +64,7 @@ public class Sensor implements Serializable {
                                             break;
                     case "Pressure"     :   try { 
                                                 Pressure h = new Pressure(date, value, zone);
-                                                FileWriter fw = new FileWriter("Pressure.csv", true);
+                                                FileWriter fw = new FileWriter("D:\\Pressure.csv", true);
                                                 fw.append(String.valueOf(h.getValue()) +";"+  h.getDate() +";"+  String.valueOf(h.getZone())+"\n"); 
                                                 fw.close(); 
                                             }

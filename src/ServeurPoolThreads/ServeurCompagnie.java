@@ -4,12 +4,9 @@
  * and open the template in the editor.
  */
 package ServeurPoolThreads;
-import Logs.LogServeur;
 import Sensors.Sensor;
 import java.net.*;
 import java.io.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *

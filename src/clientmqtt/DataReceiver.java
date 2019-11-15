@@ -5,29 +5,21 @@
  */
 package clientmqtt;
 import Sensors.Sensor;
-import static clientmqtt.DataSender.BROKER_URL;
-import com.sun.jdi.connect.spi.Connection;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.Socket;
-import java.security.Timestamp;
-import java.security.cert.CertPath;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.Properties;
 import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.JDialog;
 import org.eclipse.paho.client.mqttv3.*;
 
 /**

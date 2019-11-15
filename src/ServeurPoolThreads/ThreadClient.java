@@ -5,7 +5,6 @@
  */
 package ServeurPoolThreads;
 
-import Logs.LogServeur;
 
 /**
  *
@@ -23,7 +22,6 @@ public class ThreadClient extends Thread
         tachesAExecuter = st;
         nom = n;
         setName(nom);
-        guiApplication = new LogServeur();
     }
 
     public void run()
@@ -32,15 +30,12 @@ public class ThreadClient extends Thread
         {
             try
             {
-                guiApplication.TraceEvenements("ThreadClient : Avant le get");
                 tacheEnCours = tachesAExecuter.getTache();
             }
             catch (InterruptedException e)
             {
-                guiApplication.TraceEvenements("ThreadClient : InterruptedException " + e.getMessage());
             }
 
-            guiApplication.TraceEvenements("ThreadClient : Execution du run de tacheEnCours");
             tacheEnCours.run();
         }
     }
